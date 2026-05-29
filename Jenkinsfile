@@ -1,12 +1,12 @@
 pipeline {
     agent {
-        label 'ag-2'
+        label 'lb'
     }
     environment {
         IMAGE_NAME = "calcwebappmvn:${BUILD_NUMBER}"
         my_aws_access = credentials('my-aws-cred')
     }
-    tools {
+    /*tools {
         maven 'xyz-maven'
     }
 
@@ -55,7 +55,7 @@ pipeline {
                 echo "Maven Package Goal Executed Successfully!";
                 sh 'ls -la'
             }
-        }
+        }*/
         stage('docker image build') {
             steps {
                 sh 'which docker'
