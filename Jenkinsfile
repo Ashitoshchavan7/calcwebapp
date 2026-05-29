@@ -13,7 +13,7 @@ pipeline {
 
         stage('Git Checkout') {
             steps {
-                git branch: 'main',
+                git branch: 'master',
                 url: 'https://github.com/Ashitoshchavan7/calcwebapp.git'
             }
         }
