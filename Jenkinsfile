@@ -24,13 +24,21 @@ pipeline {
             }
         }
 
-        stage('ECR Login') {
-            steps {
-                sh 'aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 964742912902.dkr.ecr.eu-west-2.amazonaws.com'
-            }
-        }
+stage('ECR Login') {
+    steps {
+        withCredentials([[
+            $class: 'AmazonWebServicesCredentialsBinding',
+            credentialsId: 'my-aws-cred'
+        ]]) {
 
-        stage('Tag Image') {
+            sh '''
+            aws ecr get-login-password --region eu-west-2 | \
+            docker login --username AWS --password-stdin 964742912902.dkr.ecr.eu-west-2.amazonaws.com
+            '''
+        }
+    }
+}
+       stage('Tag Image') {
             steps {
                 sh 'docker tag ${IMAGE_NAME} ${ECR_REPO}:${BUILD_NUMBER}'
             }
