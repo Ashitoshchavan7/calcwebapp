@@ -6,7 +6,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "calcwebapp:${BUILD_NUMBER}"
-        ECR_REPO = "964742912902.dkr.ecr.us-west-2.amazonaws.com/dev/calculator"
+        ECR_REPO = "964742912902.dkr.ecr.eu-west-2.amazonaws.com/calculatorapp"
     }
 
     stages {
