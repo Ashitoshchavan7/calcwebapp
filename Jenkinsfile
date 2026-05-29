@@ -6,20 +6,20 @@ pipeline {
         IMAGE_NAME = "calcwebappmvn:${BUILD_NUMBER}"
         my_aws_access = credentials('my-aws-cred')
     }
-    /*tools {
-        maven 'xyz-maven'
+    //tools {
+    //    maven 'xyz-maven'
     }
 
     stages {
 
         stage('Git Checkout') {
             steps {
-                git url: 'https://github.com/mayur-z/calcwebappmvn.git'
+                git url: 'https://github.com/Ashitoshchavan7/calcwebapp.git'
                 echo "Code Checked-out Successfully!!";
                 sh 'ls -la'
             }
         }
-
+        /*
         stage('SonarQube analysis') {
             steps {
                 withSonarQubeEnv('sonar') {
