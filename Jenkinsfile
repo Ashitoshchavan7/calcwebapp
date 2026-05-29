@@ -44,12 +44,13 @@ stage('ECR Login') {
             }
         }
 
-        stage('Push Image') {
-            steps {
-                sh '964742912902.dkr.ecr.us-west-2.amazonaws.com/dev/calculator:21'
-            }
-        }
-
+stage('Push Image') {
+    steps {
+        sh '''
+        docker push 964742912902.dkr.ecr.us-west-2.amazonaws.com/dev/calculator:${BUILD_NUMBER}
+        '''
+    }
+}
         stage('Deploy to EKS') {
             steps {
                 sh '''
