@@ -116,4 +116,4 @@ pipeline {
             echo 'pipeline is FAILED'
         }
     }
-}
+
