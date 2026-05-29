@@ -46,7 +46,7 @@ stage('ECR Login') {
 
         stage('Push Image') {
             steps {
-                sh 'docker push ${ECR_REPO}:${BUILD_NUMBER}'
+                sh '964742912902.dkr.ecr.us-west-2.amazonaws.com/dev/calculator:21'
             }
         }
 
