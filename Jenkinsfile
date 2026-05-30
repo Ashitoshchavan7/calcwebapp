@@ -57,7 +57,9 @@ stage('Deploy to EKS') {
         withCredentials([[
             $class: 'AmazonWebServicesCredentialsBinding',
             credentialsId: 'aws-cred'
-        ]]) {
+        ]])
+           ecrLogin()
+        {
 
             sh '''
             aws eks update-kubeconfig --region eu-west-2 --name my-cluster
