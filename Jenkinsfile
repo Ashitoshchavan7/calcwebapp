@@ -50,18 +50,24 @@ stage('Push Image') {
         docker push 964742912902.dkr.ecr.eu-west-2.amazonaws.com/calculatorapp:25
         '''
     }
-}
-        stage('Deploy to EKS') {
-            steps {
-                sh '''
-                aws eks update-kubeconfig --region us-west-2 --name my-cluster
+} 
+    
+stage('Deploy to EKS') {
+    steps {
+        withCredentials([[
+            $class: 'AmazonWebServicesCredentialsBinding',
+            credentialsId: 'aws-cred'
+        ]]) {
 
-                sed -i "s|IMAGE_TAG|${BUILD_NUMBER}|g" k8s-deployment.yaml
+            sh '''
+            aws eks update-kubeconfig --region eu-west-2 --name my-cluster
 
-                kubectl apply -f k8s-deployment.yaml
-                '''
-            }
+            kubectl apply -f k8s-deployment.yaml
+            
+            '''
         }
+    }
+}
 
         stage('Verify Deployment') {
             steps {
