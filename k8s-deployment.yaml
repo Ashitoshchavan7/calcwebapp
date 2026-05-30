@@ -20,7 +20,7 @@ spec:
       containers:
       - name: calculator-app
 
-        image: 964742912902.dk////////////////////////////
+        image: 964742912902.dkr.ecr.eu-west-2.amazonaws.com/calculatorapp:25
 
         ports:
         - containerPort: 8080
