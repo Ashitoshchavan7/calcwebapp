@@ -47,7 +47,7 @@ stage('ECR Login') {
 stage('Push Image') {
     steps {
         sh '''
-        docker push 964742912902.dkr.ecr.us-west-2.amazonaws.com/dev/calculator:21
+        docker push 964742912902.dkr.ecr.eu-west-2.amazonaws.com/calculatorapp:25
         '''
     }
 }
