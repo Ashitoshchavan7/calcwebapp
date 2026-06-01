@@ -1,8 +1,8 @@
-FROM tomcat:9.0-jdk17
+FROM tomcat:11.0.2-jdk17-temurin
 
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-COPY . /usr/local/tomcat/webapps/ROOT
+COPY src/main/webapp /usr/local/tomcat/webapps/ROOT
 
 EXPOSE 8080
 
