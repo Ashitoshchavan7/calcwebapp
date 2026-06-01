@@ -47,7 +47,7 @@ stage('ECR Login') {
 stage('Push Image') {
     steps {
         sh '''
-        docker push 964742912902.dkr.ecr.eu-west-2.amazonaws.com/calculatorapp:34
+        docker push 964742912902.dkr.ecr.eu-west-2.amazonaws.com/calculatorapp:${BUILD_NUMBER}
         '''
     }
 } 
@@ -69,27 +69,25 @@ stage('Deploy to EKS') {
     }
 }
  stage('Verify Deployment') {
-            steps {
+    steps {
 
-                withCredentials([usernamePassword(
-                    credentialsId: 'my-aws-cred',
-                    
-                )]) {
+        withCredentials([[
+            $class: 'AmazonWebServicesCredentialsBinding',
+            credentialsId: 'my-aws-cred'
+        ]]) {
 
-                    sh '''
-                    aws eks update-kubeconfig --region $AWS_REGION --name my-cluster
+            sh '''
+            aws eks update-kubeconfig --region eu-west-2 --name my-cluster
 
-                    kubectl get nodes
+            kubectl get nodes
 
-                    kubectl get pods
+            kubectl get pods
 
-                    kubectl get svc
-                    '''
-                }
-            }
+            kubectl get svc
+            '''
         }
     }
-        
+}  
     
 
     post {
