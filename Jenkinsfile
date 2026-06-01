@@ -68,23 +68,29 @@ stage('Deploy to EKS') {
         }
     }
 }
-
-        stage('Verify Deployment') {
+ stage('Verify Deployment') {
             steps {
-                steps {
 
-        withCredentials([[
-            $class: 'AmazonWebServicesCredentialsBinding',
-            credentialsId: 'my-aws-cred'
-        ]]) {
+                withCredentials([usernamePassword(
+                    credentialsId: 'my-aws-cred',
+                    
+                )]) {
 
+                    sh '''
+                    aws eks update-kubeconfig --region $AWS_REGION --name my-cluster
 
-                sh    'aws eks update-kubeconfig --region eu-west-2 --name my-cluster' 
-                sh 'kubectl get pods'
-                sh 'kubectl get svc'
+                    kubectl get nodes
+
+                    kubectl get pods
+
+                    kubectl get svc
+                    '''
+                }
             }
         }
     }
+        
+    
 
     post {
 
