@@ -47,25 +47,25 @@ stage('ECR Login') {
 stage('Push Image') {
     steps {
         sh '''
-        docker push 964742912902.dkr.ecr.eu-west-2.amazonaws.com/calculatorapp:25
+        docker push 964742912902.dkr.ecr.eu-west-2.amazonaws.com/calculatorapp:34
         '''
     }
 } 
     
 stage('Deploy to EKS') {
     steps {
+
         withCredentials([[
             $class: 'AmazonWebServicesCredentialsBinding',
-            credentialsId: 'aws-cred'
-        ]])
-           ecrLogin()
-        {
+            credentialsId: 'my-aws-cred'
+        ]]) {
 
             sh '''
             aws eks update-kubeconfig --region eu-west-2 --name my-cluster
 
             kubectl apply -f k8s-deployment.yaml
-            
+
+            kubectl rollout status deployment/calculatorapp
             '''
         }
     }
