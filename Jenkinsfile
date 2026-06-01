@@ -64,8 +64,6 @@ stage('Deploy to EKS') {
             aws eks update-kubeconfig --region eu-west-2 --name my-cluster
 
             kubectl apply -f k8s-deployment.yaml
-
-            kubectl rollout status deployment/calculatorapp
             '''
         }
     }
