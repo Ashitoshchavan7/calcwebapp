@@ -7,6 +7,8 @@ pipeline {
     environment {
         IMAGE_NAME = "calcwebapp:${BUILD_NUMBER}"
         ECR_REPO = "964742912902.dkr.ecr.eu-west-2.amazonaws.com/calculatorapp"
+        AWS_REGION = "eu-west-2"
+        CLUSTER_NAME = "my-cluster"
     }
 
     stages {
@@ -24,71 +26,75 @@ pipeline {
             }
         }
 
-stage('ECR Login') {
-    steps {
-        withCredentials([[
-            $class: 'AmazonWebServicesCredentialsBinding',
-            credentialsId: 'my-aws-cred'
-        ]]) {
+        stage('ECR Login') {
+            steps {
 
-            sh '''
-            aws ecr get-login-password --region eu-west-2 | \
-            docker login --username AWS --password-stdin 964742912902.dkr.ecr.eu-west-2.amazonaws.com
-            '''
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'my-aws-cred'
+                ]]) {
+
+                    sh '''
+                    aws ecr get-login-password --region ${AWS_REGION} | \
+                    docker login --username AWS --password-stdin \
+                    964742912902.dkr.ecr.eu-west-2.amazonaws.com
+                    '''
+                }
+            }
         }
-    }
-}
-       stage('Tag Image') {
+
+        stage('Tag Image') {
             steps {
                 sh 'docker tag ${IMAGE_NAME} ${ECR_REPO}:${BUILD_NUMBER}'
             }
         }
 
-stage('Push Image') {
-    steps {
-        sh '''
-        docker push 964742912902.dkr.ecr.eu-west-2.amazonaws.com/calculatorapp:${BUILD_NUMBER}
-        '''
-    }
-} 
-    
-stage('Deploy to EKS') {
-    steps {
+        stage('Push Image') {
+            steps {
+                sh 'docker push ${ECR_REPO}:${BUILD_NUMBER}'
+            }
+        }
 
-        withCredentials([[
-            $class: 'AmazonWebServicesCredentialsBinding',
-            credentialsId: 'my-aws-cred'
-        ]]) {
+        stage('Deploy to EKS') {
+            steps {
 
-            sh '''
-            aws eks update-kubeconfig --region eu-west-2 --name my-cluster
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'my-aws-cred'
+                ]]) {
 
-            kubectl apply -f k8s-deployment.yaml
-            '''
+                    sh '''
+                    aws eks update-kubeconfig --region ${AWS_REGION} --name ${CLUSTER_NAME}
+
+                    kubectl apply -f k8s-deployment.yaml
+
+                    kubectl rollout status deployment/calculator-app
+                    '''
+                }
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'my-aws-cred'
+                ]]) {
+
+                    sh '''
+                    aws eks update-kubeconfig --region ${AWS_REGION} --name ${CLUSTER_NAME}
+
+                    kubectl get nodes
+
+                    kubectl get pods
+
+                    kubectl get svc
+                    '''
+                }
+            }
         }
     }
-}
- stage('Verify Deployment') {
-    steps {
-
-        withCredentials([[
-            $class: 'AmazonWebServicesCredentialsBinding',
-            credentialsId: 'my-aws-cred'
-        ]]) {
-
-            sh '''
-            aws eks update-kubeconfig --region eu-west-2 --name my-cluster
-
-            kubectl get nodes
-
-            kubectl get pods
-
-            kubectl get svc
-            '''
-        }
-    }
-}  
-    
 
     post {
 
