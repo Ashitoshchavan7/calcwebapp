@@ -71,6 +71,7 @@ stage('Deploy to EKS') {
 
         stage('Verify Deployment') {
             steps {
+                sh    'aws eks update-kubeconfig --region eu-west-2 --name my-cluster' 
                 sh 'kubectl get pods'
                 sh 'kubectl get svc'
             }
