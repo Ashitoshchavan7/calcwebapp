@@ -4,7 +4,7 @@ pipeline {
     }
     environment {
         cluster_name = "my-cluster-1"
-        Region = "us-west-2"
+        Region = "eu-west-2"
         IMAGE_NAME = "calcwebappmvn:v1"
         my_aws_access = credentials('my-aws-cred')
     }
@@ -16,7 +16,7 @@ pipeline {
 
         stage('Git Checkout') {
             steps {
-                git url: 'https://github.com/mayur-z/calcwebappmvn.git'
+                git url: 'https://github.com/Ashitoshchavan7/calcwebapp.git'
                 echo "Code Checked-out Successfully!!";
                 sh 'ls -la'
             }
