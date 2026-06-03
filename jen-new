@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'ag-2'
+        label 'lb'
     }
     environment {
         cluster_name = "my-cluster-1"
